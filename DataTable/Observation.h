@@ -9,6 +9,9 @@ public:
 
 	int getNumberOfValues() const;
 	void display() const;
+	std::variant<double, std::string> getValueByIndex(int index) const;
+
+	bool operator==(const Observation& other) const;
 
 	~Observation();
 private:
