@@ -12,10 +12,15 @@ public:
 	static Table intersectionOperation(const Table& firstTable, const Table& secondTable);
 	static Table differenceOperation(const Table& firstTable, const Table& secondTable);
 
+
 	//careful at this copies
 	static Table sortByAttributeName(const Table& table, const std::string& attributeName);
 	static Table sortByAttributeIndex(const Table& table, const int& attributeIndex);
 
+	static Table merge(const Table& firstTable, const Table& secondTable);
+
+
 private:
+
 };
 

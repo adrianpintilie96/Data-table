@@ -13,6 +13,8 @@ public:
 	int getNumberOfAttributes() const;
 	int getNumberOfObservations() const;
 	int getPrimaryKeyIndex() const;
+	std::vector<std::string> getAttributeNames() const;
+
 
 	void display() const;
 	bool operator==(const Table& other) const;
@@ -26,7 +28,10 @@ public:
 	void addObservation(Observation observation);
 private:
 	std::vector<Observation> m_observations;
-	std::map<std::string, int> m_attributeToIndex;
+	//todo: if boost was available, could use multi index containers
+	std::map<std::string, int> m_attributeNamesToIndex;
+	std::vector<std::string> m_attributeNames;
+
 	std::string m_name;
 	int m_primaryKeyIndex;
 

@@ -73,16 +73,11 @@ Table TableUtils::intersectionOperation(const Table & firstTable, const Table & 
 Table TableUtils::differenceOperation(const Table & firstTable, const Table & secondTable)
 {
 	//utility in table to validate they are the same
-
 	//sort by primary key
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
-	//todo: initialize different? maybe problems that not all the parameters are initialized the right way + copies
 	Table intersectionTable(firstTable);
-
-	//todo: problems here because is set. also, how to check always the primary key is unique 
-
 	std::vector<Observation> intersectionObservations;
 
 	std::set_difference(
@@ -92,19 +87,18 @@ Table TableUtils::differenceOperation(const Table & firstTable, const Table & se
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
-	//todo: copy here or?
 	intersectionTable.m_observations = intersectionObservations;
-
-	//todo: this can be by reference or not?
 	return intersectionTable;
 }
+
+
 
 Table TableUtils::sortByAttributeName(const Table & table, const std::string& attributeName)
 {
 	//todo: check this is another copy here?
 	try
 	{
-		return TableUtils::sortByAttributeIndex(table, table.m_attributeToIndex.at(attributeName));
+		return TableUtils::sortByAttributeIndex(table, table.m_attributeNamesToIndex.at(attributeName));
 	}
 	catch (const std::out_of_range&)
 	{
@@ -123,6 +117,32 @@ Table TableUtils::sortByAttributeIndex(const Table & table, const int & attribut
 
 	//todo: sort ascending or descending can be solved easily with default parameter
 	return sortTable;
+}
+
+Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
+{
+	//todo: validate
+
+	//important use primary key
+
+	//todo: copies x2;
+	std::vector<std::string> firstTableAttributes = firstTable.getAttributeNames();
+	std::sort(firstTableAttributes.begin(), firstTableAttributes.end());
+
+	std::vector<std::string> secondTableAttributes = secondTable.getAttributeNames();
+	std::sort(secondTableAttributes.begin(), secondTableAttributes.end());
+
+	std::vector<std::string> newAttributeNames;
+
+	std::set_difference(
+		firstTableAttributes.begin(), firstTableAttributes.end(),
+		secondTableAttributes.begin(), secondTableAttributes.end(),
+		std::back_inserter(newAttributeNames));
+
+
+
+	return Table("", { "","" }, 0);
+	
 }
 
 

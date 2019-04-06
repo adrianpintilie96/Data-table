@@ -4,15 +4,16 @@
 #include <string>
 
 //todo: pairs can be used to validate the input of the values added later correpond with data from the constructor
-Table::Table(std::string name, std::vector<std::string> attributes, int pkIndex)
+Table::Table(std::string name, std::vector<std::string> attributesNames, int pkIndex)
 	:m_name(name),
-	m_primaryKeyIndex(pkIndex)
+	m_primaryKeyIndex(pkIndex),
+	m_attributeNames(attributesNames)
 {
 	//todo: make sure you use the map the right way here because we iterate a map
 	//todo: what is size t
-	for (size_t index = 0; index < attributes.size(); index++)
+	for (size_t index = 0; index < attributesNames.size(); index++)
 	{
-		m_attributeToIndex[attributes[index]] = index;
+		m_attributeNamesToIndex[attributesNames[index]] = index;
 	}
 }
 
@@ -22,7 +23,7 @@ Table::~Table()
 
 int Table::getNumberOfAttributes() const
 {
-	return m_attributeToIndex.size();
+	return m_attributeNames.size();
 }
 
 int Table::getNumberOfObservations() const
@@ -35,24 +36,27 @@ int Table::getPrimaryKeyIndex() const
 	return m_primaryKeyIndex;
 }
 
+//todo: make sure you modify both map and vector to not have problems
+std::vector<std::string> Table::getAttributeNames() const
+{
+		return m_attributeNames;
+}
+
 //todo: be consistent with using functions of members
 void Table::display() const
 {
 
 	//todo: display the attribute?
 	//todo: difference between map and unordered map
-	
-	int index = 0;
-	for (auto iterator = m_attributeToIndex.begin(); iterator != m_attributeToIndex.end(); iterator++)
+
+	auto attributeNames = this->getAttributeNames();
+
+	for (auto &attributeName : attributeNames)
 	{
-		if (iterator->second == index)
-		{
-			std::cout << iterator->first + " | ";
-		}
-		index++;
+		std::cout << attributeName + " | ";
 	}
 
-	std::cout <<  "\n----------------------------\n";
+	std::cout << "\n----------------------------\n";
 
 	for (auto &observation : m_observations)
 	{
@@ -69,7 +73,7 @@ bool Table::operator==(const Table & other) const
 	{
 		return false;
 	}
-	
+
 	//for (size_t i = 0; i < length; i++)
 	//{
 
