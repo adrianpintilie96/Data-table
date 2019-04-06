@@ -149,6 +149,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Observation.h" />
+    <ClInclude Include="ObservationUtils.h" />
     <ClInclude Include="ObservationVisitors.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Table.h" />
@@ -158,6 +159,7 @@
   <ItemGroup>
     <ClCompile Include="DataTable.cpp" />
     <ClCompile Include="Observation.cpp" />
+    <ClCompile Include="ObservationUtils.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

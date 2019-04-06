@@ -43,7 +43,9 @@ bool Observation::operator==(const Observation & other) const
 
 	for (size_t index = 0; index < this->m_values.size(); index++)
 	{
-		if (this->m_values[index] != other.getValueByIndex(index))
+		auto val1 = this->m_values[index];
+		auto val2 = other.getValueByIndex(index);
+		if (val1 != val2)
 		{
 			return false;
 		}
