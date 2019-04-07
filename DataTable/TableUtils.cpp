@@ -118,8 +118,14 @@ void TableUtils::validatePrimaryKey(const Table & firstTable, const Table & seco
 	}
 }
 
-// this solutions is limited to tables that have 
-
+/*      This solutions is limited to tables that have the same number of values, and the same values
+   for the primary key field.
+        To add support for tables that have a different number of values for the primary key field,
+   the std::variant used in the Observation class should also support std::monostate, in order to
+   simulate null values.
+		The new version of the merge function will add new values to observations that have the 
+	same value for the primary key field, and use null for all the other observations.
+*/
 Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
 {
 	validatePrimaryKey(firstTable, secondTable);

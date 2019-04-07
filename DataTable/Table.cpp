@@ -47,7 +47,6 @@ std::vector<std::variant<double, std::string>> Table::getValuesByAttributeName(c
 	return values;
 }
 
-//todo: make sure you modify both map and vector to not have problems
 std::vector<std::string> Table::getAttributeNames() const
 {
 	return m_attributeNames;

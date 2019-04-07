@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-//todo: make sure that you make a copy or you do not when you assing the values
 Observation::Observation(const std::vector<std::variant<double, std::string>>& values)
 	:m_values(values)
 {

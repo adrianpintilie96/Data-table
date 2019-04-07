@@ -9,18 +9,15 @@ class Table
 public:
 
 	/* Additional, the names of the attributes can be received as pairs, where the second element
-		represents the data type. This approach is useful to validate the format of the new observations*/
+		represents the data type. This approach is useful to validate the format of the new observations */
 	Table(std::string name, std::vector<std::string> attributes, int pkIndex);
 	~Table();
 
-	//todo: verify setters and getters + getters for all the variables
 	int getNumberOfAttributes() const;
 	int getNumberOfObservations() const;
 	int getPrimaryKeyIndex() const;
-	std::vector<std::variant<double, std::string>> getValuesByAttributeName(const std::string& name) const;
-
 	std::vector<std::string> getAttributeNames() const;
-	//todo: document the code
+	std::vector<std::variant<double, std::string>> getValuesByAttributeName(const std::string& name) const;
 
 	void display() const;
 
