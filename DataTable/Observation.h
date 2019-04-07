@@ -17,20 +17,17 @@ private:
 	std::vector<std::variant<double, std::string>> m_values;
 };
 
-//todo: should getters and setters be inline?
-
 //todo: document also the classes
 
 class ObservationComparator
 {
 public:
-	//todo: inline constructor?
 	ObservationComparator(const int& valueIndex)
 		:m_valueIndex(valueIndex) {};
 	~ObservationComparator() {};
 
 	//todo: error at comparison is possibile?
-	inline bool operator() (const Observation& firstObservation, const Observation& secondObservation)
+	bool operator() (const Observation& firstObservation, const Observation& secondObservation)
 	{
 		return firstObservation.getValueByIndex(m_valueIndex) < secondObservation.getValueByIndex(m_valueIndex);
 	}
@@ -38,5 +35,3 @@ public:
 private:
 	int m_valueIndex;
 };
-
-//todo: move to cpp functons of comparator?

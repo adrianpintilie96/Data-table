@@ -7,7 +7,6 @@ TableUtils::TableUtils()
 {
 }
 
-
 TableUtils::~TableUtils()
 {
 }
@@ -15,28 +14,25 @@ TableUtils::~TableUtils()
 Table TableUtils::unionOperation(const Table & firstTable, const Table & secondTable)
 {
 	TableUtils::validateTables(firstTable, secondTable);
-	//todo: to catch here the error? think not
 
 	//sort the tables by the primary key
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
-	//todo: initialize different? maybe problems that not all the parameters are initialized the right way + copies
-	Table intersectionTable(firstTable);
-	//todo: problems here because is set. also, how to check always the primary key is unique 
+	Table unionTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
+	std::vector<Observation> unionObservations;
 
-	std::vector<Observation> intersectionObservations;
 	std::set_union(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(intersectionObservations),
+		std::back_inserter(unionTable.m_observations),
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
-	//todo: copy here or?
-	intersectionTable.m_observations = intersectionObservations;
 
-	//todo: this can be by reference or not?
-	return intersectionTable;
+	// use addObservations to make sure we validate the input and update the keys 
+	unionTable.addObservations(unionObservations);
+
+	return unionTable;
 }
 
 Table TableUtils::intersectionOperation(const Table & firstTable, const Table & secondTable)
@@ -47,9 +43,8 @@ Table TableUtils::intersectionOperation(const Table & firstTable, const Table & 
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
-	Table intersectionTable(firstTable);
+	Table intersectionTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
 	std::vector<Observation> intersectionObservations;
-
 	std::set_intersection(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
@@ -57,10 +52,13 @@ Table TableUtils::intersectionOperation(const Table & firstTable, const Table & 
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
-	intersectionTable.m_observations = intersectionObservations;
+	// use addObservations to make sure we validate the input and update the keys 
+	intersectionTable.addObservations(intersectionObservations);
 	return intersectionTable;
 }
 
+/* todo: as the only difference between the operations defined so far is the called function,
+	a more generic function should be defined. This function has as input also a pointer to the function to be called */
 Table TableUtils::differenceOperation(const Table & firstTable, const Table & secondTable)
 {
 	TableUtils::validateTables(firstTable, secondTable);
@@ -69,58 +67,41 @@ Table TableUtils::differenceOperation(const Table & firstTable, const Table & se
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
-	// create the new table as a copy of the first table
-	Table intersectionTable(firstTable);
-	std::vector<Observation> intersectionObservations;
-	
-	// perform the difference between the observations of the two tables;
+	Table differenceTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
+	std::vector<Observation> differentObservations;
 	std::set_difference(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(intersectionObservations),
+		std::back_inserter(differentObservations),
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
-	// assign the resulted values to the new table
-	intersectionTable.m_observations = intersectionObservations;
-	return intersectionTable;
+	// use addObservations to make sure we validate the input and update the keys 
+	differenceTable.addObservations(differentObservations);
+	return differenceTable;
 }
-
-
 
 Table TableUtils::sortByAttributeName(const Table & table, const std::string& attributeName)
 {
-	//todo: check this is another copy here?
-	try
-	{
-		return TableUtils::sortByAttributeIndex(table, table.m_attributeNamesToIndex.at(attributeName));
-	}
-	catch (const std::out_of_range&)
-	{
-		std::cerr << "The specified attribute does not exist in the table.\n";
-		return table;
-	}
+	return TableUtils::sortByAttributeIndex(table, table.m_attributeNamesToIndex.at(attributeName));
 }
 
 Table TableUtils::sortByAttributeIndex(const Table & table, const int & attributeIndex)
 {
-	Table sortTable = table;
-	//todo: take care on what other parameters are set when copy here
+	if (attributeIndex > table.m_observations.size() - 1)
+	{
+		throw std::invalid_argument("The specified attribute does not exist in the table.");
+	}
 
-	//todo: validate the index here to be less + should catch all the throws?
+	Table sortTable(table);
 	std::sort(sortTable.m_observations.begin(), sortTable.m_observations.end(), ObservationComparator(attributeIndex));
-
-	//todo: sort ascending or descending can be solved easily with default parameter
 	return sortTable;
 }
 
 void TableUtils::validateTables(const Table & firstTable, const Table & secondTable)
 {
-	//todo: catch only invalid argument exception
 	if (firstTable.m_attributeNames != secondTable.m_attributeNames)
 	{
-		//todo: is this message correct?
-		//this comparison works for vectors?
 		throw std::invalid_argument("The attributes of the tables \
 				do not correspond.");
 	}

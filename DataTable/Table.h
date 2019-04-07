@@ -13,12 +13,10 @@ public:
 	Table(std::string name, std::vector<std::string> attributes, int pkIndex);
 	~Table();
 
-	//todo: verify setters and getters
+	//todo: verify setters and getters + getters for all the variables
 	int getNumberOfAttributes() const;
 	int getNumberOfObservations() const;
 	int getPrimaryKeyIndex() const;
-	//todo: is the design with this function ok?
-
 	std::vector<std::variant<double, std::string>> getValuesByAttributeName(const std::string& name) const;
 
 	std::vector<std::string> getAttributeNames() const;
@@ -26,12 +24,11 @@ public:
 
 	void display() const;
 
-	//todo: when use map with new key, validate that no new key is added
-
-	//todo: primary key?
 
 	//todo: check the comments from the other project
 	void addObservation(const Observation& observation);
+	void addObservations(const std::vector<Observation>& observations);
+
 private:
 	std::vector<Observation> m_observations;
 	//todo: if boost was available, could use multi index containers

@@ -9,7 +9,6 @@ Table::Table(std::string name, std::vector<std::string> attributesNames, int pkI
 	m_primaryKeyIndex(pkIndex),
 	m_attributeNames(attributesNames)
 {
-	//todo: make sure you use the map the right way here because we iterate a map -> maybe use unordered map?
 	for (size_t index = 0; index < attributesNames.size(); index++)
 	{
 		m_attributeNamesToIndex[attributesNames[index]] = index;
@@ -34,8 +33,6 @@ int Table::getPrimaryKeyIndex() const
 {
 	return m_primaryKeyIndex;
 }
-
-//todo: when to use inline?
 
 std::vector<std::variant<double, std::string>> Table::getValuesByAttributeName(const std::string& name) const
 {
@@ -78,9 +75,6 @@ void Table::display() const
 
 }
 
-
-//todo: const ref
-//todo: very important: change the infrastrcuture to work with values instead of observations?
 void Table::addObservation(const Observation& observation)
 {
 	// validate the value of the primary key
@@ -100,4 +94,12 @@ void Table::addObservation(const Observation& observation)
 	// store the new values
 	m_observations.push_back(observation);
 	m_primaryKeyValues.insert(primaryKeyValue);
+}
+
+void Table::addObservations(const std::vector<Observation>& observations)
+{
+	for (auto &observation : observations)
+	{
+		this->addObservation(observation);
+	}
 }
