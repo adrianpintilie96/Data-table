@@ -14,26 +14,24 @@ TableUtils::~TableUtils()
 
 Table TableUtils::unionOperation(const Table & firstTable, const Table & secondTable)
 {
-	//utility in table to validate they are the same
+	TableUtils::validateTables(firstTable, secondTable);
+	//todo: to catch here the error? think not
 
-	//sort by primary key
+	//sort the tables by the primary key
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
 	//todo: initialize different? maybe problems that not all the parameters are initialized the right way + copies
 	Table intersectionTable(firstTable);
-
 	//todo: problems here because is set. also, how to check always the primary key is unique 
 
 	std::vector<Observation> intersectionObservations;
-
 	std::set_union(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
 		std::back_inserter(intersectionObservations),
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
-
 	//todo: copy here or?
 	intersectionTable.m_observations = intersectionObservations;
 
@@ -43,17 +41,13 @@ Table TableUtils::unionOperation(const Table & firstTable, const Table & secondT
 
 Table TableUtils::intersectionOperation(const Table & firstTable, const Table & secondTable)
 {
-	//utility in table to validate they are the same
+	TableUtils::validateTables(firstTable, secondTable);
 
-	//sort by primary key
+	//sort the tables by the primary key
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
-	//todo: initialize different? maybe problems that not all the parameters are initialized the right way + copies
 	Table intersectionTable(firstTable);
-
-	//todo: problems here because is set. also, how to check always the primary key is unique 
-
 	std::vector<Observation> intersectionObservations;
 
 	std::set_intersection(
@@ -63,23 +57,23 @@ Table TableUtils::intersectionOperation(const Table & firstTable, const Table & 
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
-	//todo: copy here or?
 	intersectionTable.m_observations = intersectionObservations;
-
-	//todo: this can be by reference or not?
 	return intersectionTable;
 }
 
 Table TableUtils::differenceOperation(const Table & firstTable, const Table & secondTable)
 {
-	//utility in table to validate they are the same
-	//sort by primary key
+	TableUtils::validateTables(firstTable, secondTable);
+
+	// sort the tables by the primary key
 	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
+	// create the new table as a copy of the first table
 	Table intersectionTable(firstTable);
 	std::vector<Observation> intersectionObservations;
-
+	
+	// perform the difference between the observations of the two tables;
 	std::set_difference(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
@@ -87,6 +81,7 @@ Table TableUtils::differenceOperation(const Table & firstTable, const Table & se
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
+	// assign the resulted values to the new table
 	intersectionTable.m_observations = intersectionObservations;
 	return intersectionTable;
 }
@@ -119,6 +114,24 @@ Table TableUtils::sortByAttributeIndex(const Table & table, const int & attribut
 	return sortTable;
 }
 
+void TableUtils::validateTables(const Table & firstTable, const Table & secondTable)
+{
+	//todo: catch only invalid argument exception
+	if (firstTable.m_attributeNames != secondTable.m_attributeNames)
+	{
+		//todo: is this message correct?
+		//this comparison works for vectors?
+		throw std::invalid_argument("The attributes of the tables \
+				do not correspond.");
+	}
+
+	if (firstTable.m_primaryKeyIndex != secondTable.m_primaryKeyIndex)
+	{
+		throw std::invalid_argument("The primary keys of the tables \
+				do not correspond.");
+	}
+}
+
 Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
 {
 	//todo: validate
@@ -139,7 +152,14 @@ Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
 		secondTableAttributes.begin(), secondTableAttributes.end(),
 		std::back_inserter(newAttributeNames));
 
+	Table mergedTable(firstTable);
 
+	for (auto &attributeName : newAttributeNames)
+	{
+		auto values = firstTable.getValuesByAttributeName(attributeName);
+	}
+
+	
 
 	return Table("", { "","" }, 0);
 	

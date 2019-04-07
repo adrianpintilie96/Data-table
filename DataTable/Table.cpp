@@ -3,14 +3,13 @@
 #include <iostream>
 #include <string>
 
-//todo: pairs can be used to validate the input of the values added later correpond with data from the constructor
+
 Table::Table(std::string name, std::vector<std::string> attributesNames, int pkIndex)
 	:m_name(name),
 	m_primaryKeyIndex(pkIndex),
 	m_attributeNames(attributesNames)
 {
-	//todo: make sure you use the map the right way here because we iterate a map
-	//todo: what is size t
+	//todo: make sure you use the map the right way here because we iterate a map -> maybe use unordered map?
 	for (size_t index = 0; index < attributesNames.size(); index++)
 	{
 		m_attributeNamesToIndex[attributesNames[index]] = index;
@@ -36,19 +35,32 @@ int Table::getPrimaryKeyIndex() const
 	return m_primaryKeyIndex;
 }
 
+//todo: when to use inline?
+
+std::vector<std::variant<double, std::string>> Table::getValuesByAttributeName(const std::string& name) const
+{
+	//todo: this throws expection
+	int attributeIndex = m_attributeNamesToIndex.at(name);
+	int numberOfObservations = m_observations.size();
+	std::vector<std::variant<double, std::string>> values(numberOfObservations);
+
+	for (size_t observationIndex = 0; observationIndex < numberOfObservations; observationIndex++)
+	{
+		values[observationIndex] = m_observations[observationIndex].getValueByIndex(attributeIndex);
+	}
+
+	return values;
+}
+
 //todo: make sure you modify both map and vector to not have problems
 std::vector<std::string> Table::getAttributeNames() const
 {
-		return m_attributeNames;
+	return m_attributeNames;
 }
 
-//todo: be consistent with using functions of members
 void Table::display() const
 {
-
-	//todo: display the attribute?
-	//todo: difference between map and unordered map
-
+	// display the names of the attributes
 	auto attributeNames = this->getAttributeNames();
 
 	for (auto &attributeName : attributeNames)
@@ -58,6 +70,7 @@ void Table::display() const
 
 	std::cout << "\n----------------------------\n";
 
+	// display the values of each observation
 	for (auto &observation : m_observations)
 	{
 		observation.display();
@@ -65,33 +78,26 @@ void Table::display() const
 
 }
 
-bool Table::operator==(const Table & other) const
-{
-
-	//todo: problem here because can have same elements but in different order
-	if (this->m_observations.size() != other.getNumberOfObservations())
-	{
-		return false;
-	}
-
-	//for (size_t i = 0; i < length; i++)
-	//{
-
-	//}
-
-	return true;
-}
 
 //todo: const ref
 //todo: very important: change the infrastrcuture to work with values instead of observations?
-void Table::addObservation(Observation observation)
+void Table::addObservation(const Observation& observation)
 {
+	// validate the value of the primary key
+	auto primaryKeyValue = observation.getValueByIndex(m_primaryKeyIndex);
+	if (m_primaryKeyValues.find(primaryKeyValue) != m_primaryKeyValues.end())
+	{
+		throw std::invalid_argument("The value of the Primary Key is not unique.");
+	}
+
+	// validate the attributes
 	if (observation.getNumberOfValues() != this->getNumberOfAttributes())
 	{
 		throw std::invalid_argument("The number of value of the observation does not \
 				correspond with the number of attributes of the table.");
 	}
 
-	//todo: validate the data types of the observation
+	// store the new values
 	m_observations.push_back(observation);
+	m_primaryKeyValues.insert(primaryKeyValue);
 }

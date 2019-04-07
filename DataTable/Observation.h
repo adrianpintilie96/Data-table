@@ -5,12 +5,11 @@
 class Observation
 {
 public:
-	Observation(std::vector<std::variant<double, std::string>> values);
+	Observation(const std::vector<std::variant<double, std::string>>& values);
 
 	int getNumberOfValues() const;
+	std::variant<double, std::string> getValueByIndex(const int& index) const;
 	void display() const;
-	std::variant<double, std::string> getValueByIndex(int index) const;
-
 	bool operator==(const Observation& other) const;
 
 	~Observation();
@@ -20,10 +19,13 @@ private:
 
 //todo: should getters and setters be inline?
 
+//todo: document also the classes
+
 class ObservationComparator
 {
 public:
-	ObservationComparator(int valueIndex)
+	//todo: inline constructor?
+	ObservationComparator(const int& valueIndex)
 		:m_valueIndex(valueIndex) {};
 	~ObservationComparator() {};
 

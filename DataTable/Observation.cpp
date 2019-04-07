@@ -4,12 +4,10 @@
 #include <string>
 
 //todo: make sure that you make a copy or you do not when you assing the values
-Observation::Observation(std::vector<std::variant<double, std::string>> values)
+Observation::Observation(const std::vector<std::variant<double, std::string>>& values)
 	:m_values(values)
 {
 }
-
-//to use "using" for std::visitor?
 
 int Observation::getNumberOfValues() const
 {
@@ -18,18 +16,21 @@ int Observation::getNumberOfValues() const
 
 void Observation::display() const
 {
-	auto PrintVisitor = [](const auto& value) { 
+	// display the values of the observation using a visitor
+
+	auto printVisitor = [](const auto& value) { 
 		std::cout << value << " | "; 
 	};
+
 	for (auto &value : m_values)
 	{
-		std::visit(PrintVisitor, value);
+		std::visit(printVisitor, value);
 	}
 
 	std::cout << std::endl;
 }
 
-std::variant<double, std::string> Observation::getValueByIndex(int index) const
+std::variant<double, std::string> Observation::getValueByIndex(const int& index) const
 {
 	return m_values[index];
 }
@@ -43,9 +44,7 @@ bool Observation::operator==(const Observation & other) const
 
 	for (size_t index = 0; index < this->m_values.size(); index++)
 	{
-		auto val1 = this->m_values[index];
-		auto val2 = other.getValueByIndex(index);
-		if (val1 != val2)
+		if (this->m_values[index] != other.getValueByIndex(index))
 		{
 			return false;
 		}
