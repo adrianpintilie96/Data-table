@@ -9,6 +9,7 @@ public:
 
 	int getNumberOfValues() const;
 	std::variant<double, std::string> getValueByIndex(const int& index) const;
+	void addValue(const std::variant<double, std::string>& value);
 	void display() const;
 	bool operator==(const Observation& other) const;
 
@@ -26,7 +27,6 @@ public:
 		:m_valueIndex(valueIndex) {};
 	~ObservationComparator() {};
 
-	//todo: error at comparison is possibile?
 	bool operator() (const Observation& firstObservation, const Observation& secondObservation)
 	{
 		return firstObservation.getValueByIndex(m_valueIndex) < secondObservation.getValueByIndex(m_valueIndex);

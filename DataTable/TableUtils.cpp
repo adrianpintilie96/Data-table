@@ -106,6 +106,11 @@ void TableUtils::validateTables(const Table & firstTable, const Table & secondTa
 				do not correspond.");
 	}
 
+	validatePrimaryKey(firstTable, secondTable);
+}
+
+void TableUtils::validatePrimaryKey(const Table & firstTable, const Table & secondTable)
+{
 	if (firstTable.m_primaryKeyIndex != secondTable.m_primaryKeyIndex)
 	{
 		throw std::invalid_argument("The primary keys of the tables \
@@ -113,13 +118,22 @@ void TableUtils::validateTables(const Table & firstTable, const Table & secondTa
 	}
 }
 
+// this solutions is limited to tables that have 
+
 Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
 {
-	//todo: validate
+	validatePrimaryKey(firstTable, secondTable);
 
-	//important use primary key
+	if (firstTable.getNumberOfObservations() != secondTable.getNumberOfObservations())
+	{
+		throw std::invalid_argument("The number of values of the tables does not \
+				correspond.");
+	}
 
-	//todo: copies x2;
+	/* create a new table starting from the second table,
+	where the missing attributes from the first table will be added */
+	Table mergedTable(secondTable);
+
 	std::vector<std::string> firstTableAttributes = firstTable.getAttributeNames();
 	std::sort(firstTableAttributes.begin(), firstTableAttributes.end());
 
@@ -127,24 +141,55 @@ Table TableUtils::merge(const Table& firstTable, const Table& secondTable)
 	std::sort(secondTableAttributes.begin(), secondTableAttributes.end());
 
 	std::vector<std::string> newAttributeNames;
-
 	std::set_difference(
 		firstTableAttributes.begin(), firstTableAttributes.end(),
 		secondTableAttributes.begin(), secondTableAttributes.end(),
 		std::back_inserter(newAttributeNames));
 
-	Table mergedTable(firstTable);
-
-	for (auto &attributeName : newAttributeNames)
+	// update the map containing the attribute names
+	int numberOfAttributes = mergedTable.m_attributeNames.size();
+	int newAttributeNameIndex = 0;
+	for (int i = numberOfAttributes; i < numberOfAttributes+newAttributeNames.size() ; i++)
 	{
-		auto values = firstTable.getValuesByAttributeName(attributeName);
+		mergedTable.m_attributeNamesToIndex[newAttributeNames[newAttributeNameIndex]] = i;
+		newAttributeNameIndex++;
 	}
 
-	
+	// also update the attribute names
+	mergedTable.m_attributeNames.insert(mergedTable.m_attributeNames.end(), 
+		newAttributeNames.begin(), newAttributeNames.end());
 
-	return Table("", { "","" }, 0);
-	
+	// convert names to indices
+	std::vector<int> attributeIndeces(newAttributeNames.size());
+	for (int i = 0; i < newAttributeNames.size(); i++)
+	{
+		attributeIndeces[i] = firstTable.m_attributeNamesToIndex.at(newAttributeNames[i]);
+	}
+
+	int primaryKeyIndex = secondTable.m_primaryKeyIndex;
+
+	for (int i = 0; i < firstTable.m_observations.size(); i++)
+	{
+		auto firstTableObservation = firstTable.m_observations[i];
+		auto secondTableObservation = secondTable.m_observations[i];
+
+		// validate that the values of the primary keys are equal
+		if (firstTableObservation.getValueByIndex(primaryKeyIndex) == secondTableObservation.getValueByIndex(primaryKeyIndex))
+		{
+			for (auto &attributeIndex : attributeIndeces)
+			{
+				mergedTable.m_observations[i].addValue(firstTableObservation.getValueByIndex(attributeIndex));
+			}
+		}
+		else
+		{
+			throw std::invalid_argument("The tables do not have the same observations.");
+		}
+	}
+
+	return mergedTable;
 }
+
 
 
 

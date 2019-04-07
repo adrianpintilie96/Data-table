@@ -24,14 +24,13 @@ public:
 
 	void display() const;
 
-
-	//todo: check the comments from the other project
 	void addObservation(const Observation& observation);
 	void addObservations(const std::vector<Observation>& observations);
 
 private:
 	std::vector<Observation> m_observations;
-	//todo: if boost was available, could use multi index containers
+	/*if boost is available, multi-index containers can be used to 
+	 to avoid using multiple containers for the attribute names */
 	std::unordered_map<std::string, int> m_attributeNamesToIndex;
 	std::vector<std::string> m_attributeNames;
 	std::unordered_set<std::variant<double, std::string>> m_primaryKeyValues;

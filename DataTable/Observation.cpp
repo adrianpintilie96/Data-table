@@ -35,6 +35,11 @@ std::variant<double, std::string> Observation::getValueByIndex(const int& index)
 	return m_values[index];
 }
 
+void Observation::addValue(const std::variant<double, std::string>& value)
+{
+	m_values.push_back(value);
+}
+
 bool Observation::operator==(const Observation & other) const
 {
 	if (this->m_values.size() != other.getNumberOfValues())

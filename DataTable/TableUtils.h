@@ -21,8 +21,8 @@ public:
 
 
 private:
-	//todo: or use bool?
 	static void validateTables(const Table& firstTable, const Table& secondTable);
+	static void validatePrimaryKey(const Table& firstTable, const Table& secondTable);
 
 };
 
