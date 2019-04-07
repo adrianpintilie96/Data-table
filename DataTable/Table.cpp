@@ -34,19 +34,6 @@ int Table::getPrimaryKeyIndex() const
 	return m_primaryKeyIndex;
 }
 
-std::vector<std::variant<double, std::string>> Table::getValuesByAttributeName(const std::string& name) const
-{
-	int attributeIndex = m_attributeNamesToIndex.at(name);
-	int numberOfObservations = m_observations.size();
-	std::vector<std::variant<double, std::string>> values(numberOfObservations);
-	for (size_t observationIndex = 0; observationIndex < numberOfObservations; observationIndex++)
-	{
-		values[observationIndex] = m_observations[observationIndex].getValueByIndex(attributeIndex);
-	}
-
-	return values;
-}
-
 std::vector<std::string> Table::getAttributeNames() const
 {
 	return m_attributeNames;

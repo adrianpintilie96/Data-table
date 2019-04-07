@@ -27,9 +27,6 @@
     <ClInclude Include="Table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObservationVisitors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TableUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -13,15 +13,20 @@ public:
 	Table(std::string name, std::vector<std::string> attributes, int pkIndex);
 	~Table();
 
+	/* Returns the number of attributes of the table */
 	int getNumberOfAttributes() const;
+	/* Returns the number of observations of a table */
 	int getNumberOfObservations() const;
+	/* Returns the index of the primary key attribute */
 	int getPrimaryKeyIndex() const;
+	/* Returns the names of the attributes */
 	std::vector<std::string> getAttributeNames() const;
-	std::vector<std::variant<double, std::string>> getValuesByAttributeName(const std::string& name) const;
-
+	/* Displays all the observations of the table */
 	void display() const;
 
+	/* Adds a new observation to the table */
 	void addObservation(const Observation& observation);
+	/* Adds multiple observations to the table */
 	void addObservations(const std::vector<Observation>& observations);
 
 private:
