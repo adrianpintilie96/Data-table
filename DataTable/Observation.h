@@ -2,14 +2,21 @@
 #include <vector>
 #include <variant>
 
+/*
+	Represents generic instances of information.
+*/
 class Observation
 {
 public:
 	Observation(const std::vector<std::variant<double, std::string>>& values);
 
+	/* Returns the number of values in an observation */
 	int getNumberOfValues() const;
+	/* Returns the value of the observation that corresponds to the index */
 	std::variant<double, std::string> getValueByIndex(const int& index) const;
+	/* Adds value at the end of the observation */
 	void addValue(const std::variant<double, std::string>& value);
+	/* Displays the values of the observation */
 	void display() const;
 	bool operator==(const Observation& other) const;
 
@@ -17,8 +24,6 @@ public:
 private:
 	std::vector<std::variant<double, std::string>> m_values;
 };
-
-//todo: document also the classes
 
 class ObservationComparator
 {

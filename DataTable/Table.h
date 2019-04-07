@@ -26,13 +26,17 @@ public:
 
 private:
 	std::vector<Observation> m_observations;
+
 	/*if boost is available, multi-index containers can be used to 
 	 to avoid using multiple containers for the attribute names */
 	std::unordered_map<std::string, int> m_attributeNamesToIndex;
 	std::vector<std::string> m_attributeNames;
+
+	// used to validate the uniqueness of the keys
 	std::unordered_set<std::variant<double, std::string>> m_primaryKeyValues;
-	std::string m_name;
 	int m_primaryKeyIndex;
+
+	std::string m_name;
 
 	friend class TableUtils;
 };
