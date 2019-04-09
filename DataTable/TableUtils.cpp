@@ -25,7 +25,7 @@ Table TableUtils::unionOperation(const Table & firstTable, const Table & secondT
 	std::set_union(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
 		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(unionTable.m_observations),
+		std::back_inserter(unionObservations),
 		ObservationComparator(firstTable.m_primaryKeyIndex)
 	);
 
