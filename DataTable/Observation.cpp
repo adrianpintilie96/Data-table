@@ -8,6 +8,11 @@ Observation::Observation(const std::vector<std::variant<double, std::string>>& v
 {
 }
 
+Observation::~Observation()
+{
+}
+
+
 int Observation::getNumberOfValues() const
 {
 	return m_values.size();
@@ -57,6 +62,3 @@ bool Observation::operator==(const Observation & other) const
 	return true;
 }
 
-Observation::~Observation()
-{
-}

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-
+//todo: check copy and move ctors in all classes 
 Table::Table(std::string name, std::vector<std::string> attributesNames, int pkIndex)
 	:m_name(name),
 	m_primaryKeyIndex(pkIndex),
@@ -13,10 +13,25 @@ Table::Table(std::string name, std::vector<std::string> attributesNames, int pkI
 	{
 		m_attributeNamesToIndex[attributesNames[index]] = index;
 	}
+	//todo: remove couts
+	std::cout << "construcut" << std::endl;
+}
+
+//todo: move in a vector that has objects that to not have move ctors?
+Table::Table(Table && table):
+	m_observations(std::move(table.m_observations)),
+	m_attributeNamesToIndex(std::move(table.m_attributeNamesToIndex)),
+	m_attributeNames(std::move(table.m_attributeNames)),
+	m_primaryKeyValues(std::move(table.m_primaryKeyValues)),
+	m_primaryKeyIndex(std::exchange(table.m_primaryKeyIndex, -1)),
+	m_name(std::move(table.m_name))
+{
+	std::cout << "display move";
 }
 
 Table::~Table()
 {
+	std::cout << "deconstrucut" << std::endl;
 }
 
 int Table::getNumberOfAttributes() const
@@ -87,3 +102,5 @@ void Table::addObservations(const std::vector<Observation>& observations)
 		this->addObservation(observation);
 	}
 }
+
+

@@ -37,6 +37,7 @@ Table TableUtils::unionOperation(const Table & firstTable, const Table & secondT
 
 Table TableUtils::intersectionOperation(const Table & firstTable, const Table & secondTable)
 {
+
 	TableUtils::validateTables(firstTable, secondTable);
 
 	//sort the tables by the primary key
@@ -44,6 +45,7 @@ Table TableUtils::intersectionOperation(const Table & firstTable, const Table & 
 	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
 
 	Table intersectionTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
+	//todo: check for move semantics here
 	std::vector<Observation> intersectionObservations;
 	std::set_intersection(
 		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
