@@ -28,10 +28,11 @@ public:
 	/* Adds multiple observations to the table */
 	void addObservations(const std::vector<Observation>& observations);
 
-	Table(const Table& table) = default;
-	Table& operator=(const Table& other) = default;
-	Table(Table && table);
-	
+	Table(const Table&) = default;
+	Table& operator=(const Table&) = default;
+	Table(Table && table) = default;
+	Table& operator=(Table&&) = default;
+
 private:
 	std::vector<Observation> m_observations;
 

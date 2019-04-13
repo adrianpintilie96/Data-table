@@ -8,7 +8,6 @@
 class Observation
 {
 public:
-	//todo: make sure to add assigment operator and the rule of 5
 	Observation(const std::vector<std::variant<double, std::string>>& values);
 	Observation(const Observation&) = default;
 	Observation& operator=(const Observation&) = default;
