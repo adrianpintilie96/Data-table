@@ -3,84 +3,34 @@
 #include <algorithm>
 #include <iostream>
 
-TableUtils::TableUtils()
-{
-}
-
-TableUtils::~TableUtils()
-{
-}
-
 Table TableUtils::unionOperation(const Table & firstTable, const Table & secondTable)
 {
-	TableUtils::validateTables(firstTable, secondTable);
-
-	//sort the tables by the primary key
-	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
-	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
-
-	Table unionTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
-	std::vector<Observation> unionObservations;
-
-	std::set_union(
-		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
-		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(unionObservations),
-		ObservationComparator(firstTable.m_primaryKeyIndex)
-	);
-
-	// use addObservations to make sure we validate the input and update the keys 
-	unionTable.addObservations(unionObservations);
-
-	return unionTable;
+	// call tablesGenericOperation with set_union
+	return TableUtils::tablesGenericOperation(firstTable, secondTable,
+		std::set_union<
+			std::vector<Observation>::iterator, std::vector<Observation>::iterator, 
+			std::back_insert_iterator<std::vector<Observation>>, ObservationComparator
+		>);
 }
 
 Table TableUtils::intersectionOperation(const Table & firstTable, const Table & secondTable)
 {
-
-	TableUtils::validateTables(firstTable, secondTable);
-
-	//sort the tables by the primary key
-	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
-	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
-
-	Table intersectionTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
-
-	std::vector<Observation> intersectionObservations;
-	std::set_intersection(
-		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
-		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(intersectionObservations),
-		ObservationComparator(firstTable.m_primaryKeyIndex)
-	);
-
-	// use addObservations to make sure we validate the input and update the keys 
-	intersectionTable.addObservations(intersectionObservations);
-	return intersectionTable;
+	// call tablesGenericOperation with set_intersection
+	return TableUtils::tablesGenericOperation(firstTable, secondTable,
+		std::set_intersection<
+			std::vector<Observation>::iterator, std::vector<Observation>::iterator,
+			std::back_insert_iterator<std::vector<Observation>>, ObservationComparator
+		>);
 }
 
-/* todo: as the only difference between the operations defined so far is the called function,
-	a more generic function should be defined. This function has as input also a pointer to the function to be called */
 Table TableUtils::differenceOperation(const Table & firstTable, const Table & secondTable)
 {
-	TableUtils::validateTables(firstTable, secondTable);
-
-	// sort the tables by the primary key
-	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
-	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
-
-	Table differenceTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
-	std::vector<Observation> differentObservations;
-	std::set_difference(
-		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
-		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-		std::back_inserter(differentObservations),
-		ObservationComparator(firstTable.m_primaryKeyIndex)
-	);
-
-	// use addObservations to make sure we validate the input and update the keys 
-	differenceTable.addObservations(differentObservations);
-	return differenceTable;
+	// call tablesGenericOperation with tablesGenericOperation
+	return TableUtils::tablesGenericOperation(firstTable, secondTable,
+		std::set_difference<
+		std::vector<Observation>::iterator, std::vector<Observation>::iterator,
+		std::back_insert_iterator<std::vector<Observation>>, ObservationComparator
+		>);
 }
 
 Table TableUtils::sortByAttributeName(const Table & table, const std::string& attributeName)
