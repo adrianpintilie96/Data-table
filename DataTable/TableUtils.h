@@ -28,29 +28,34 @@ private:
 	static void validatePrimaryKey(const Table& firstTable, const Table& secondTable);
 
 	template<class T>
-	static Table tablesGenericOperation(const Table& firstTable, const Table& secondTable, T operation) {
-		
-		TableUtils::validateTables(firstTable, secondTable);
-
-		//sort the tables by the primary key
-		auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
-		auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
-
-		Table resultTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
-		std::vector<Observation> resultedObservations;
-
-		operation(
-			sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
-			sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
-			std::back_inserter(resultedObservations),
-			ObservationComparator(firstTable.m_primaryKeyIndex)
-		);
-
-		// use addObservations to make sure we validate the input and update the keys 
-		resultTable.addObservations(resultedObservations);
-
-		return resultTable;
-
-	}
+	static Table tablesGenericOperation(const Table& firstTable, const Table& secondTable, T operation);
 };
 
+template<class T>
+ Table TableUtils::tablesGenericOperation(const Table& firstTable, const Table& secondTable, T operation)
+{
+	// validate the tables
+	TableUtils::validateTables(firstTable, secondTable);
+
+	// sort the tables by the primary key
+	auto sortedTable1 = TableUtils::sortByAttributeIndex(firstTable, firstTable.m_primaryKeyIndex);
+	auto sortedTable2 = TableUtils::sortByAttributeIndex(secondTable, firstTable.m_primaryKeyIndex);
+
+	// construct the new table
+	Table resultTable(firstTable.m_name, firstTable.m_attributeNames, firstTable.m_primaryKeyIndex);
+	std::vector<Observation> resultedObservations;
+
+	// perform the operation
+	operation(
+		sortedTable1.m_observations.begin(), sortedTable1.m_observations.end(),
+		sortedTable2.m_observations.begin(), sortedTable2.m_observations.end(),
+		std::back_inserter(resultedObservations),
+		ObservationComparator(firstTable.m_primaryKeyIndex)
+	);
+
+	// use addObservations to make sure we validate the input and update the keys 
+	resultTable.addObservations(resultedObservations);
+
+	return resultTable;
+
+}

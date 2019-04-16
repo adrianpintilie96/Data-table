@@ -28,8 +28,8 @@ Table TableUtils::differenceOperation(const Table & firstTable, const Table & se
 	// call tablesGenericOperation with tablesGenericOperation
 	return TableUtils::tablesGenericOperation(firstTable, secondTable,
 		std::set_difference<
-		std::vector<Observation>::iterator, std::vector<Observation>::iterator,
-		std::back_insert_iterator<std::vector<Observation>>, ObservationComparator
+			std::vector<Observation>::iterator, std::vector<Observation>::iterator,
+			std::back_insert_iterator<std::vector<Observation>>, ObservationComparator
 		>);
 }
 
