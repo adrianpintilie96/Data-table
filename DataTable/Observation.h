@@ -9,6 +9,12 @@ class Observation
 {
 public:
 	Observation(const std::vector<std::variant<double, std::string>>& values);
+	Observation(const Observation&) = default;
+	Observation& operator=(const Observation&) = default;
+	Observation(Observation&&) = default;
+	Observation& operator=(Observation&&) = default;
+	bool operator==(const Observation& other) const;
+	~Observation();
 
 	/* Returns the number of values in an observation */
 	int getNumberOfValues() const;
@@ -18,9 +24,7 @@ public:
 	void addValue(const std::variant<double, std::string>& value);
 	/* Displays the values of the observation */
 	void display() const;
-	bool operator==(const Observation& other) const;
 
-	~Observation();
 private:
 	std::vector<std::variant<double, std::string>> m_values;
 };

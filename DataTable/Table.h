@@ -3,7 +3,6 @@
 #include <unordered_map>
 #include "Observation.h"
 
-
 class Table
 {
 public:
@@ -28,6 +27,11 @@ public:
 	void addObservation(const Observation& observation);
 	/* Adds multiple observations to the table */
 	void addObservations(const std::vector<Observation>& observations);
+
+	Table(const Table&) = default;
+	Table& operator=(const Table&) = default;
+	Table(Table && table) = default;
+	Table& operator=(Table&&) = default;
 
 private:
 	std::vector<Observation> m_observations;

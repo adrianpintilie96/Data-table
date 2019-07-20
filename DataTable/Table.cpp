@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 
-
 Table::Table(std::string name, std::vector<std::string> attributesNames, int pkIndex)
 	:m_name(name),
 	m_primaryKeyIndex(pkIndex),
@@ -87,3 +86,5 @@ void Table::addObservations(const std::vector<Observation>& observations)
 		this->addObservation(observation);
 	}
 }
+
+
